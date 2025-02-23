@@ -1,0 +1,226 @@
+/* --- Global Styles --- */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  box-sizing: border-box;
+  background-color: #f7f7f7;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- Style des Titres --- */
+h1, h2, h3, h4 {
+  margin: 0;
+  padding: 0;
+  font-weight: 600;
+  color: inherit;
+}
+
+/* --- Styles Communs --- */
+
+button {
+  cursor: pointer;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.3); /* Légère ombre au focus */
+}
+
+input, select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+/* --- Light Theme --- */
+
+.light-theme {
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.light-theme .page {
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.light-theme button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.light-theme button:hover {
+  background-color: #45a049;
+}
+
+.light-theme .card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  transition: box-shadow 0.3s ease;
+}
+
+.light-theme .card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.light-theme .theme-toggle button {
+  background-color: transparent;
+  border: 1px solid #4CAF50;
+  color: #4CAF50;
+}
+
+.light-theme .theme-toggle button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* --- Dark Theme --- */
+
+.dark-theme {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-theme .page {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-theme button {
+  background-color: #6200ea;
+  color: white;
+}
+
+.dark-theme button:hover {
+  background-color: #3700b3;
+}
+
+.dark-theme .card {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  margin: 20px 0;
+  transition: box-shadow 0.3s ease;
+}
+
+.dark-theme .card:hover {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.7);
+}
+
+.dark-theme .theme-toggle button {
+  background-color: transparent;
+  border: 1px solid #6200ea;
+  color: #6200ea;
+}
+
+.dark-theme .theme-toggle button:hover {
+  background-color: #6200ea;
+  color: white;
+}
+
+/* --- Style des Cartes --- */
+
+.card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  transition: all 0.3s ease;
+}
+
+.card .title {
+  font-size: 18px;
+  color: #3b82f6;
+  margin-bottom: 10px;
+}
+
+.card .description {
+  font-size: 14px;
+  color: #555;
+}
+
+/* --- Button Toggle Theme --- */
+
+.theme-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px;
+}
+
+.theme-toggle button {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle button:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+/* --- Graphiques --- */
+
+.chart-container {
+  width: 80%;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dark-theme .chart-container {
+  background-color: #333;
+  color: #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Responsive Design --- */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 10px;
+  }
+
+  .chart-container {
+    width: 100%;
+  }
+
+  .theme-toggle {
+    justify-content: center;
+  }
+
+  .card {
+    padding: 15px;
+    margin: 15px 0;
+  }
+}
