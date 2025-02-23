@@ -1,0 +1,59 @@
+- name: Create systemd Service for Coinbase Streamer
+  copy:
+    dest: /etc/systemd/system/main_coinbase.service
+    content: |
+      [Unit]
+      Description=Coinbase Streamer Script Service
+      After=network.target
+
+      [Service]
+      WorkingDirectory=/opt/streamer
+      EnvironmentFile=/opt/streamer/.env
+      Environment="PYTHONPATH=/opt/streamer/src:${PYTHONPATH}"
+      ExecStart=/opt/streamer/.venv/bin/python /opt/streamer/main_coinbase.py
+      Restart=always
+      RestartSec=5
+      User={{ ansible_user }}
+      StandardOutput=journal
+      StandardError=journal
+
+      [Install]
+      WantedBy=multi-user.target
+  
+- name: Create systemd Service for GDELT Streamer
+  copy:
+    dest: /etc/systemd/system/main_gdelt.service
+    content: |
+      [Unit]
+      Description=GDELT Streamer Script Service
+      After=network.target
+
+      [Service]
+      WorkingDirectory=/opt/streamer
+      EnvironmentFile=/opt/streamer/.env
+      Environment="PYTHONPATH=/opt/streamer/src:$PYTHONPATH"
+      ExecStart=/opt/streamer/.venv/bin/python /opt/streamer/main_gdelt.py
+      User={{ ansible_user }}
+      StandardOutput=journal
+      StandardError=journal
+
+- name: Create systemd Timer for GDELT Service
+  copy:
+    dest: /etc/systemd/system/main_gdelt.timer
+    content: |
+      [Unit]
+      Description=Timer for Main GDELT Script Service
+
+      [Timer]
+      OnBootSec=15min
+      OnUnitActiveSec=15min
+
+      [Install]
+      WantedBy=timers.target
+
+- name: Start Streamer Services
+  shell:
+    cmd: |
+      sudo systemctl daemon-reload
+      sudo systemctl restart main_coinbase.service
+      sudo systemctl restart main_gdelt.timer

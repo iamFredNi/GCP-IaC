@@ -1,0 +1,34 @@
+process.roles=broker,controller
+node.id={{ node_id }}
+
+# Définition du quorum des contrôleurs : on liste tous les brokers avec leur node_id et leur host:port
+controller.quorum.voters={% for host in kafka_brokers %}{{ hostvars[host]['node_id'] }}@{{ hostvars[host]['private_ip'] }}:9093{% if not loop.last %},{% endif %}{% endfor %}
+
+# Listeners disponibles sur le broker
+# PLAINTEXT pour le trafic clients/inter-broker, CONTROLLER pour la coordination interne KRaft
+listeners=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+
+# On advertise UNIQUEMENT le PLAINTEXT, pas le CONTROLLER, pour éviter l'erreur
+advertised.listeners=PLAINTEXT://{{ private_ip }}:9092
+
+# Déclarer le listener CONTROLLER
+controller.listener.names=CONTROLLER
+
+# Mappage entre les listeners et leurs protocoles
+listener.security.protocol.map=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+
+# Listener interne pour la communication inter-broker
+inter.broker.listener.name=PLAINTEXT
+
+# Répertoires de données
+log.dirs=/var/lib/kafka/logs
+
+# Paramètres additionnels recommandés
+offsets.topic.replication.factor=3
+default.replication.factor=3
+min.insync.replicas=2
+transaction.state.log.replication.factor=3
+transaction.state.log.min.isr=2
+num.partitions=3
+num.network.threads=8
+num.io.threads=8

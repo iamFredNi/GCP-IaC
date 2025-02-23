@@ -1,0 +1,73 @@
+---
+- name: Provision React Application
+  hosts: all
+  become: yes
+  vars:
+    app_name: pythie
+    app_dir: /var/www/pythie
+    node_version: 22.x
+    start_script: "{{ app_dir }}/server.js"
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Ensure Node.js is installed
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Ensure npm is installed
+      apt:
+        name: npm
+        state: present
+    
+    - name: Install node packages
+      shell: npm install 
+      args:
+        chdir: "{{ app_dir }}"
+
+    - name: Create the systemd service file for Pythie
+      copy:
+        dest: /etc/systemd/system/{{ app_name }}.service
+        content: |
+          [Unit]
+          Description=Pythie app
+          After=network.target
+
+          [Service]
+          Type=simple
+          ExecStart=/bin/bash -c "export PORT=80; sudo -E /usr/bin/node start.mjs"
+          User={{ ansible_user }}
+          WorkingDirectory=/var/www/pythie
+          Restart=always
+          RestartSec=5
+          Environment="AWS_REGION=eu-west-3"
+          Environment="AWS_DEFAULT_REGION=eu-west-3"
+          Environment="TABLE_NAME=CollectedSites"
+          Environment=NODE_ENV=production
+          StandardOutput=syslog
+          StandardError=syslog
+          SyslogIdentifier=app
+          RuntimeMaxSec=21600
+
+          [Install]
+          WantedBy=multi-user.target
+      notify: 
+        - Reload systemd
+
+    - name: Start the app service
+      systemd:
+        name: "{{ app_name }}.service"
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Restart {{ service_name }}
+      systemd:
+        name: "{{ service_name }}"
+        state: restarted

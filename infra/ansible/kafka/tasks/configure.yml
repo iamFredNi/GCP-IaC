@@ -1,0 +1,126 @@
+- name: Create Kafka user with home directory
+  user:
+    name: kafka
+    createhome: yes
+    state: present
+    shell: /bin/bash
+  tags:
+    - create_user
+
+- name: Add Kafka user to sudo group
+  user:
+    name: kafka
+    groups: sudo
+    append: yes
+  tags:
+    - add_to_sudo
+
+- name: Allow Kafka to use sudo without password
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^kafka ALL=.*'
+    line: 'kafka ALL=(ALL) NOPASSWD:ALL'
+    validate: 'visudo -cf %s'
+  tags:
+    - sudo_nopasswd
+
+- name: Change ownership of /opt/kafka to kafka user and group
+  file:
+    path: /opt/kafka
+    state: directory
+    owner: kafka
+    group: kafka
+    recurse: yes
+  tags:
+    - set_ownership
+
+- name: Create the /kafka/data/coinbase directory
+  file:
+    path: /var/lib/kafka/data/coinbase
+    state: directory
+    mode: '0755'
+  tags:
+    - create_directory
+
+- name: Set ownership of /kafka/data/coinbase to kafka user and group
+  file:
+    path: /var/lib/kafka/data/coinbase
+    state: directory
+    owner: kafka
+    group: kafka
+    recurse: yes
+  tags:
+    - set_permissions
+
+- name: Create the /kafka/data/gdelt directory
+  file:
+    path: /var/lib/kafka/data/gdelt
+    state: directory
+    mode: '0755'
+  tags:
+    - create_directory
+
+- name: Set ownership of /kafka/data/gdelt to kafka user and group
+  file:
+    path: /var/lib/kafka/data/gdelt
+    state: directory
+    owner: kafka
+    group: kafka
+    recurse: yes
+  tags:
+    - set_permissions
+
+- name: Create the /kafka/metadata directory
+  file:
+    path: /var/lib/kafka/metadata
+    state: directory
+    mode: '0755'
+  tags:
+    - create_directory
+
+- name: Set ownership of /kafka/metadata/ to kafka user and group
+  file:
+    path: /var/lib/kafka/metadata
+    state: directory
+    owner: kafka
+    group: kafka
+    recurse: yes
+  tags:
+    - set_permissions
+
+- name: Create the /kafka/logs directory
+  file:
+    path: /var/lib/kafka/logs
+    state: directory
+    mode: '0755'
+    owner: kafka
+    group: kafka
+  tags:
+    - create_directory
+
+- name: Remove /opt/kafka/config/kraft/server.properties file
+  file:
+    path: /opt/kafka/config/kraft/server.properties
+    state: absent
+  tags:
+    - remove_file
+
+- name: Create /opt/kafka/config/kraft directory
+  file:
+    path: /opt/kafka/config/kraft
+    state: directory
+
+- name: Configure server.properties for KRaft mode
+  template:
+    src: server.properties.j2
+    dest: "/opt/kafka/config/kraft/server.properties"
+  vars:
+    cluster_uuid: test_kafka_cluster
+    node_id: "{{ hostvars[inventory_hostname]['node_id'] }}"
+    kafka_brokers: "{{ groups['kafka'] }}"
+
+- name: Format storage directories
+  command: "/opt/kafka/kafka_2.13-3.8.0/bin/kafka-storage.sh format -t test_kafka_cluster -c /opt/kafka/config/kraft/server.properties"
+  args:
+    creates: "/opt/kafka/data/meta.properties"

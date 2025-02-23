@@ -1,0 +1,15 @@
+- name: Install Python3 and Pip
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python3
+    - python3-pip
+    - python3-venv
+    - rsync
+
+- name: Install virtualenv with Pip
+  pip:
+    name: virtualenv
+    state: present
+    executable: pip

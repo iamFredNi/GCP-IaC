@@ -1,0 +1,9 @@
+- name: Install Google Ops Agent
+  include_role:
+    name: google-cloud-ops-agents-ansible
+  vars:
+    agent_type: ops-agent
+    main_config_file: tasks/kafka_ops_agent_config.yml
+
+- name: Restart Ops agent
+  command: "systemctl restart google-cloud-ops-agent"

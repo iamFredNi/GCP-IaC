@@ -1,0 +1,17 @@
+---
+- name: Setup Streamer Instances
+  hosts: streamer
+  become: yes
+  vars_files: ./variables.yml
+  tasks:
+    - name: Wait for Target to be  Available
+      ansible.builtin.wait_for_connection:
+        
+    - name: Install Requirements
+      import_tasks: ./tasks/install.yml
+
+    - name: Configure Instances
+      import_tasks: ./tasks/configure.yml
+
+    - name: Launch Services
+      import_tasks: ./tasks/services.yml

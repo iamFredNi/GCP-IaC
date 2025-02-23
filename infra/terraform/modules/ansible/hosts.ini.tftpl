@@ -1,0 +1,19 @@
+[streamer]
+%{ for i, ip in streamers_ips ~}
+streamer-${i+1} ansible_host=${ip} ansible_user=ansible ansible_ssh_private_key_file=.ssh/ssh_private_key ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
+%{ endfor ~}
+
+[kafka]
+%{ for i, ip in kafka_public_ips ~}
+kafka-broker-${i+1} ansible_host=${ip} ansible_user=ansible ansible_ssh_private_key_file=.ssh/ssh_private_key ansible_ssh_extra_args='-o StrictHostKeyChecking=no' node_id=${i+1} private_ip=${kafka_private_ips[i]}
+%{ endfor ~}
+
+[ingestion]
+%{ for ip in ingestion_ips ~}
+${ip}
+%{ endfor ~}
+
+[application]
+%{ for ip in app_ips ~}
+${ip}
+%{ endfor ~}

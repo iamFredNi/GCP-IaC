@@ -1,0 +1,6 @@
+remote_app_dir: /opt/streamer
+source_file_path: /opt/streamer/main_coinbase.py
+kafka_host: 127.0.0.1
+kafka_port: 9092
+env:
+  PYTHONPATH: /opt/streamer/src

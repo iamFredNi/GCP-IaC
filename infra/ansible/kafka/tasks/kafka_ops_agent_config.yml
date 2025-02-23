@@ -1,0 +1,20 @@
+metrics:
+  receivers:
+    kafka:
+      type: kafka
+  service:
+    pipelines:
+      kafka:
+        receivers:
+          - kafka
+logging:
+  receivers:
+    kafka:
+      type: kafka
+      include_paths: 
+        - /var/lib/kafka/logs/**/*.log
+  service:
+    pipelines:
+      kafka:
+        receivers:
+          - kafka

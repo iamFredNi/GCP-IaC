@@ -1,0 +1,9 @@
+---
+- name: Import Playbook to Setup Streamer Instances
+  import_playbook: ./streamer/playbook.yml
+
+- name: Import Playbook to Setup Kafka Instances
+  import_playbook: ./kafka/playbook.yml
+
+# - name: Import Playbook to Setup Application Instances
+#   import_playbook: ./app/playbook.yml

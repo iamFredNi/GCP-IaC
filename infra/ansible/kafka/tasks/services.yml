@@ -1,0 +1,27 @@
+- name: Create systemd Service for kafka
+  copy:
+    dest: /etc/systemd/system/kafka.service
+    content: |
+      [Unit]
+      Description=Apache Kafka Server
+      After=network.target
+
+      [Service]
+      Environment="JMX_PORT=9999"
+      Environment="KAFKA_OPTS=-Djava.rmi.server.hostname=localhost"
+      WorkingDirectory=/opt/kafka
+      ExecStart=/opt/kafka/kafka_2.13-3.8.0/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties      
+      Restart=always
+      RestartSec=5
+      User=kafka
+      StandardOutput=journal
+      StandardError=journal
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Start kafka Service
+  shell:
+    cmd: |
+      sudo systemctl daemon-reload
+      sudo systemctl restart kafka.service

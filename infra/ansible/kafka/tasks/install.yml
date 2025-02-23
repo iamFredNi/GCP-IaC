@@ -1,0 +1,42 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install required packages
+  apt:
+    name:
+      - openjdk-11-jre-headless
+      - curl
+      - wget
+      - tar
+    state: present
+
+# - name: Download Kafka archive
+#   get_url:
+#     url: https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz  
+#     dest: /tmp/kafka_2.13-3.8.0.tgz
+#   tags:
+#     - download_kafka
+#   retries: 10
+#   delay: 3
+
+- name: Copy Kafka archive
+  copy:
+    src: kafka_2.13-3.8.0.tgz
+    dest: /tmp/kafka_2.13-3.8.0.tgz
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Create /opt/kafka directory
+  file:
+    path: /opt/kafka
+    state: directory
+
+- name: Extract Kafka archive in /opt/kafka
+  unarchive:
+    src: /tmp/kafka_2.13-3.8.0.tgz
+    dest: /opt/kafka
+    remote_src: yes
+  tags:
+    - extract_kafka

@@ -1,0 +1,36 @@
+- name: Create Target Directory
+  file: 
+    path: "{{ remote_app_dir }}"
+    state: directory
+
+- name: Copy Streamer Files
+  synchronize:
+    src: ../../../../streamer/
+    dest: "{{ remote_app_dir }}/"
+    rsync_opts:
+      - "--rsh='ssh -i ../.ssh/ssh_private_key -o StrictHostKeyChecking=no'"
+
+- name: Create gdelt_files directory
+  file: 
+    path: "{{ remote_app_dir }}/gdelt/gdelt_files"
+    state: directory
+
+- name: Grant Permissions for CSV Files
+  shell:
+    cmd: sudo chown ansible:ansible {{ remote_app_dir }}/gdelt/gdelt_files
+
+- name: Set Environment File
+  copy: 
+    dest: "{{ remote_app_dir }}/.env"
+    content: |
+      KAFKA_HOST={{ kafka_host }}
+      KAFKA_PORT={{ kafka_port }}
+    mode: '0600'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+
+- name: Setup Python Virtual Environment and Install Dependencies
+  pip: 
+    requirements: "{{ remote_app_dir }}/requirements.txt"
+    virtualenv: "{{ remote_app_dir }}/.venv/"
+    virtualenv_python: python3
